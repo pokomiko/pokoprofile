@@ -260,9 +260,9 @@ body {
 }
 
 #siteLogo {
-  z-index: 1000; /* Top */
+  z-index: 1000;
 
-  width: 10vw;
+  width: 20vw;
   height: auto;
   position: absolute;
   top: 20px;
