@@ -8,14 +8,22 @@ const maximizeBtn = document.getElementById("maximize");
 const closeBtn = document.getElementById("close");
 const pButton = document.getElementById("pButton");
 
+const slides = document.querySelectorAll("#imageSlider .slide");
+const prevBtn = document.querySelector("#imageSlider .prev");
+const nextBtn = document.querySelector("#imageSlider .next");
+const slider = document.getElementById("imageSlider");
+
 let isMaximized = false;
 let isMinimized = false;
+
+let current = 0;
+let interval;
 
 const originalSize = {
   width: terminalWindow.offsetWidth,
   height: terminalWindow.offsetHeight,
   top: terminalWindow.offsetTop,
-  left: terminalWindow.offsetLeft
+  left: terminalWindow.offsetLeft,
 };
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -32,39 +40,63 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        const cmd = input.value.trim();
-      
-        // Display entered command regardless of content
-        const cmdLine = document.createElement("div");
-        //cmdLine.innerHTML = `<span class="prompt">poko@pokomiko:~$ </span><span class="cmd-text">${cmd}</span>`;
-        terminalContent.appendChild(cmdLine);
-      
-        if (cmd === "clear") {
-          terminalContent.innerHTML = ""; // Clear the terminal screen
-          const logLine = document.createElement("div");
-          logLine.textContent = "[LOG] Command Clear!";
-          logContent.appendChild(logLine);
-        } else if (cmd !== "") {
-          const response = document.createElement("div");
-          response.innerHTML = `bash: ${cmd}: command not found`;
-          terminalContent.appendChild(response);
-      
-          const logLine = document.createElement("div");
-          logLine.textContent = `[LOG] ${cmd} command not found`;
-          logContent.appendChild(logLine);
-        }
-      
-        // Show the next prompt
-        const promptLine = document.createElement("div");
-        promptLine.innerHTML = `<span class="prompt">poko@pokomiko:~$ </span><span class="cmd-text"></span>`;
-        terminalContent.appendChild(promptLine);
-      
-        input.value = "";
-        input.focus();
-        terminalContent.scrollTop = terminalContent.scrollHeight;
-      }
-      
+  if (e.key === "Enter") {
+    const cmd = input.value.trim();
+
+    // Display entered command regardless of content
+    const cmdLine = document.createElement("div");
+    //cmdLine.innerHTML = `<span class="prompt">poko@pokomiko:~$ </span><span class="cmd-text">${cmd}</span>`;
+    terminalContent.appendChild(cmdLine);
+
+    if (cmd === "clear") {
+      terminalContent.innerHTML = ""; // Clear the terminal screen
+      const logLine = document.createElement("div");
+      logLine.textContent = "[LOG] command Clear!";
+      logContent.appendChild(logLine);
+    } else if (cmd === "whoami") {
+      const response = document.createElement("div");
+      response.innerHTML = `Hello Everyone I'm Poko!<br>I'm a Pastel Blue Ciel user, and I love Ciel so much!<br>タイ人だよう、シエルちゃんが大好き！、よろしくね！`;
+      terminalContent.appendChild(response);
+
+    } else if (cmd === "help -d help") {
+      const response = document.createElement("div");
+      response.innerHTML = `help - Display information about builtin commands.`;
+      terminalContent.appendChild(response);
+
+    } else if (cmd === "help -d clear") {
+      const response = document.createElement("div");
+      response.innerHTML = `clear - Clear the terminal screen`;
+      terminalContent.appendChild(response);
+
+    } else if (cmd === "info whoami") {
+      const response = document.createElement("div");
+      response.innerHTML = `‘whoami’ prints the user name associated with the current effective user ID.`;
+      terminalContent.appendChild(response);
+
+    } else if (cmd === "pwd") {
+      const response = document.createElement("div");
+      response.innerHTML = `/home/poko`;
+      terminalContent.appendChild(response);
+
+    } else if (cmd !== "") {
+      const response = document.createElement("div"); 
+      response.innerHTML = `bash: ${cmd}: command not found`;
+      terminalContent.appendChild(response);
+
+      const logLine = document.createElement("div");
+      logLine.textContent = `[LOG] ${cmd} command not found`;
+      logContent.appendChild(logLine);
+    }
+
+    // Show the next prompt
+    const promptLine = document.createElement("div");
+    promptLine.innerHTML = `<span class="prompt">poko@pokomiko:~$ </span><span class="cmd-text"></span>`;
+    terminalContent.appendChild(promptLine);
+
+    input.value = "";
+    input.focus();
+    terminalContent.scrollTop = terminalContent.scrollHeight;
+  }
 });
 
 minimizeBtn.onclick = () => {
@@ -131,3 +163,64 @@ document.addEventListener("mousemove", (e) => {
 document.addEventListener("mouseup", () => {
   isDragging = false;
 });
+
+function showSlide(index) {
+  slides.forEach((slide, i) => {
+    slide.classList.remove("active");
+    if (i === index) slide.classList.add("active");
+  });
+}
+
+function nextSlide() {
+  current = (current + 1) % slides.length;
+  showSlide(current);
+}
+
+function prevSlide() {
+  current = (current - 1 + slides.length) % slides.length;
+  showSlide(current);
+}
+
+function startAutoSlide() {
+  interval = setInterval(nextSlide, 8000);
+}
+
+function stopAutoSlide() {
+  clearInterval(interval);
+}
+
+// Event listeners
+nextBtn.addEventListener("click", () => {
+  nextSlide();
+  stopAutoSlide();
+  startAutoSlide();
+});
+
+prevBtn.addEventListener("click", () => {
+  prevSlide();
+  stopAutoSlide();
+  startAutoSlide();
+});
+
+slider.addEventListener("mouseenter", stopAutoSlide);
+slider.addEventListener("mouseleave", startAutoSlide);
+
+// Touch events for swipe
+let touchStartX = 0;
+
+slider.addEventListener("touchstart", (e) => {
+  touchStartX = e.touches[0].clientX;
+});
+
+slider.addEventListener("touchend", (e) => {
+  const touchEndX = e.changedTouches[0].clientX;
+  if (touchEndX - touchStartX > 50) {
+    prevSlide();
+  } else if (touchStartX - touchEndX > 50) {
+    nextSlide();
+  }
+});
+
+// Init
+showSlide(current);
+startAutoSlide();

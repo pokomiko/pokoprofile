@@ -19,7 +19,7 @@ body {
   bottom: 0;
   width: 100%;
   height: 40px;
-  background-color: #c4c4c4;
+  background-color: #fffafa;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,7 +38,7 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #a7c7e7;
+  background-color: #b4dcef;
   color: white;
   display: flex;
   justify-content: center;
@@ -160,7 +160,7 @@ body {
 }
 
 .prompt {
-  color: #7dd3fc;
+  color: #b4dcef;
 }
 
 .cmd-text {
@@ -197,4 +197,111 @@ body {
 
 .terminal-window.closing {
   animation: closeAnimation 0.3s ease forwards;
+}
+
+.terminal-dashboard {
+  background-color: #2e2c2c;
+  color: rgb(255, 255, 255);
+  font-family: monospace;
+  border-radius: 12px;
+  padding: 200px;
+  width: 90%;
+  max-width: 600px;
+  margin: 30px auto;
+  box-shadow: 0 0 12px #323333;
+
+  position: fixed;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  font-family: monospace;
+  z-index: 999;
+  bottom: 30px;
+  top: auto;
+  transform: none;
+  text-align: left;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;  
+  text-align: left;
+  padding: 10px;   
+  flex-direction: column;
+}
+
+.terminal-header {
+  font-weight: bold;
+  font-size: 1.5em;
+  color: #b4dcef;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #b4dcef;
+  padding-bottom: 10px;
+}
+
+.terminal-body .prompt {
+  color: #b4dcef;
+}
+
+#siteLogo {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  height: 200px; /* Adjust Size */
+  z-index: 1000; /* Top */
+}
+#imageSlider {
+  position: fixed;
+  right: 100px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 800px;
+  height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 4px solid #e9e9e9;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  background-color: white;
+  z-index: 999;
+}
+
+#imageSlider .slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+#imageSlider .slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+#imageSlider .nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 191, 255, 0.6);
+  border: none;
+  color: white;
+  font-size: 24px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 2;
+  user-select: none;
+}
+
+#imageSlider .nav.prev {
+  left: 10px;
+}
+#imageSlider .nav.next {
+  right: 10px;
+}
+
+@media (max-width: 500px) {
+  #imageSlider {
+    width: 90vw;
+    height: 180px;
+    right: 5vw;
+  }
 }

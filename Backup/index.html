@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Poko Terminal</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <img src="images/poko-logo.png" id="siteLogo" alt="Logo" />
+    <div class="terminal-window" id="terminalWindow">
+      <div class="title-bar" id="titleBar">
+        <div class="window-controls">
+          <button id="close"></button>
+          <button id="maximize"></button>
+          <button id="minimize"></button>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab active-tab">Poko</div>
+      </div>
+      <div class="content">
+        <div class="terminal" id="terminalContent"></div>
+        <div class="log" id="logContent"></div>
+      </div>
+      <div class="input-wrapper">
+        <input type="text" id="cmdInput" autofocus />
+      </div>
+    </div>
+    <div class="taskbar">
+      <div class="p-button" id="pButton">P</div>
+      <div style="display: flex; gap: 10px">
+        <a href="https://www.facebook.com/pokodayou" target="_blank"
+          ><img
+            src="https://img.icons8.com/?size=100&id=118497&format=png&color=000000"
+            alt="Facebook"
+        /></a>
+        <a href="https://x.com/Poko_miko" target="_blank"
+          ><img
+            src="https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=000000"
+            alt="X"
+        /></a>
+        <a
+          href="https://vrchat.com/home/user/usr_21c3ad19-5da2-4f9b-b373-0d0d8af38c7a"
+          target="_blank"
+          ><img src="images/VRChat.png" alt="VRChat"
+        /></a>
+      </div>
+    </div>
+    <div id="imageSlider">
+      <img src="images/slide1.png" class="slide active" alt="Slide 1" />
+      <img src="images/slide2.png" class="slide" alt="Slide 2" />
+      <img src="images/slide3.png" class="slide" alt="Slide 3" />
+      <button class="nav prev">&#10094;</button>
+      <button class="nav next">&#10095;</button>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
