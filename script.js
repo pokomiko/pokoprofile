@@ -57,29 +57,28 @@ input.addEventListener("keydown", (e) => {
       const response = document.createElement("div");
       response.innerHTML = `Hello Everyone I'm Poko!<br>I'm a Pastel Blue Ciel user, and I love Ciel so much!<br>タイ人だよう、シエルちゃんが大好き！、よろしくね！`;
       terminalContent.appendChild(response);
-
     } else if (cmd === "help -d help") {
       const response = document.createElement("div");
       response.innerHTML = `help - Display information about builtin commands.`;
       terminalContent.appendChild(response);
-
     } else if (cmd === "help -d clear") {
       const response = document.createElement("div");
       response.innerHTML = `clear - Clear the terminal screen`;
       terminalContent.appendChild(response);
-
     } else if (cmd === "info whoami") {
       const response = document.createElement("div");
       response.innerHTML = `‘whoami’ prints the user name associated with the current effective user ID.`;
       terminalContent.appendChild(response);
-
     } else if (cmd === "pwd") {
       const response = document.createElement("div");
       response.innerHTML = `/home/poko`;
       terminalContent.appendChild(response);
-
+    } else if (cmd === "help") {
+      const response = document.createElement("div");
+      response.innerHTML = `GNU bash, version 1.00.0(03)-release (x86_64-redhat-linux-gnu)<br>These shell commands are defined internally. Type 'help' to see this list.<br>Use 'clear' to clear the terminal screen.<br>Use 'whoami' to prints the user name associated with the current effective user ID.<br>Use 'pwd' to Print the name of the current working directory.`;
+      terminalContent.appendChild(response);
     } else if (cmd !== "") {
-      const response = document.createElement("div"); 
+      const response = document.createElement("div");
       response.innerHTML = `bash: ${cmd}: command not found`;
       terminalContent.appendChild(response);
 
