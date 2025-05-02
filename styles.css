@@ -4,7 +4,7 @@
 
 body {
   margin: 0;
-  background-image: url("images/bg.png");
+  background-image: url("images/bg.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -199,6 +199,19 @@ body {
   animation: closeAnimation 0.3s ease forwards;
 }
 
+#terminalWindow {
+  position: relative;
+  width: 60vw;
+  height: 40vh;
+  max-width: 900px;
+  max-height: 600px;
+  min-width: 400px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .terminal-dashboard {
   background-color: #2e2c2c;
   color: rgb(255, 255, 255);
@@ -222,10 +235,15 @@ body {
   text-align: left;
   display: flex;
   justify-content: flex-start;
-  align-items: flex-start;  
+  align-items: flex-start;
   text-align: left;
-  padding: 10px;   
+  padding: 10px;
   flex-direction: column;
+
+  position: absolute;
+  width: 30vw;
+  max-width: 400px;
+  padding: 20px;
 }
 
 .terminal-header {
@@ -242,14 +260,17 @@ body {
 }
 
 #siteLogo {
-  position: fixed;
+  z-index: 1000; /* Top */
+
+  width: 10vw;
+  height: auto;
+  position: absolute;
   top: 20px;
   right: 20px;
-  height: 200px; /* Adjust Size */
-  z-index: 1000; /* Top */
+  max-width: 1500px;
 }
 #imageSlider {
-  position: fixed;
+  position: absolute;
   right: 100px;
   top: 50%;
   transform: translateY(-50%);
@@ -261,6 +282,12 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   background-color: white;
   z-index: 999;
+
+  width: 30vw;
+  height: 40vh;
+  max-width: 800px;
+  max-height: 500px;
+  overflow: hidden;
 }
 
 #imageSlider .slide {
