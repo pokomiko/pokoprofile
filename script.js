@@ -75,7 +75,7 @@ input.addEventListener("keydown", (e) => {
       terminalContent.appendChild(response);
     } else if (cmd === "help") {
       const response = document.createElement("div");
-      response.innerHTML = `GNU bash, version 1.00.0(03)-release (x86_64-redhat-linux-gnu)<br>These shell commands are defined internally. Type 'help' to see this list.<br>Use 'clear' to clear the terminal screen.<br>Use 'whoami' to prints the user name associated with the current effective user ID.<br>Use 'pwd' to Print the name of the current working directory.`;
+      response.innerHTML = `POKO bash, version 1.00.0(03)-release (x86_64-redhat-linux-poko)<br>These shell commands are defined internally. Type 'help' to see this list.<br>Use 'clear' to clear the terminal screen.<br>Use 'whoami' to prints the user name associated with the current effective user ID.<br>Use 'pwd' to Print the name of the current working directory.`;
       terminalContent.appendChild(response);
     } else if (cmd !== "") {
       const response = document.createElement("div");
