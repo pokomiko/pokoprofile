@@ -1,6 +1,6 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 
-type WindowAnimation = "" | "minimizing" | "closing";
+type WindowAnimation = "" | "minimizing" | "closing" | "maximizing" | "restoring";
 type WindowBounds = {
   top: number;
   left: number;
@@ -16,6 +16,7 @@ type DraggableWindowOptions = {
 };
 
 const animationDuration = 260;
+const maximizeAnimationDuration = 340;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), Math.max(min, max));
@@ -29,6 +30,7 @@ export function useDraggableWindow(options: DraggableWindowOptions = {}) {
   const isResizing = ref(false);
   const animationState = ref<WindowAnimation>("");
   let hideTimer: ReturnType<typeof window.setTimeout> | undefined;
+  let temporaryAnimationTimer: ReturnType<typeof window.setTimeout> | undefined;
   let dragFrame: number | undefined;
   let resizeFrame: number | undefined;
   let manualResizeFrame: number | undefined;
@@ -94,6 +96,24 @@ export function useDraggableWindow(options: DraggableWindowOptions = {}) {
 
     window.clearTimeout(hideTimer);
     hideTimer = undefined;
+  }
+
+  function clearTemporaryAnimationTimer() {
+    if (!temporaryAnimationTimer) {
+      return;
+    }
+
+    window.clearTimeout(temporaryAnimationTimer);
+    temporaryAnimationTimer = undefined;
+  }
+
+  function setTemporaryAnimation(state: "maximizing" | "restoring") {
+    clearTemporaryAnimationTimer();
+    animationState.value = state;
+    temporaryAnimationTimer = window.setTimeout(() => {
+      animationState.value = "";
+      temporaryAnimationTimer = undefined;
+    }, maximizeAnimationDuration);
   }
 
   function clearResizeTimer() {
@@ -188,17 +208,20 @@ export function useDraggableWindow(options: DraggableWindowOptions = {}) {
 
     if (!isMaximized.value) {
       captureBounds();
+      setTemporaryAnimation("maximizing");
       isMaximized.value = true;
       return;
     }
 
     Object.assign(bounds, savedBounds);
+    setTemporaryAnimation("restoring");
     isMaximized.value = false;
     nextTick(clampToViewport);
   }
 
-  function hideWithAnimation(state: WindowAnimation) {
+  function hideWithAnimation(state: "minimizing" | "closing") {
     clearHideTimer();
+    clearTemporaryAnimationTimer();
     animationState.value = state;
     hideTimer = window.setTimeout(() => {
       visible.value = false;
@@ -216,6 +239,7 @@ export function useDraggableWindow(options: DraggableWindowOptions = {}) {
 
   function restore(focus?: () => void) {
     clearHideTimer();
+    clearTemporaryAnimationTimer();
     animationState.value = "";
     visible.value = true;
     nextTick(() => {
@@ -404,6 +428,7 @@ export function useDraggableWindow(options: DraggableWindowOptions = {}) {
 
   onBeforeUnmount(() => {
     clearHideTimer();
+    clearTemporaryAnimationTimer();
     clearResizeTimer();
 
     if (resizeFrame !== undefined) {

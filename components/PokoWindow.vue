@@ -9,7 +9,9 @@
       dragging: isDragging,
       resizing: isResizing,
       minimizing: animationState === 'minimizing',
-      closing: animationState === 'closing'
+      closing: animationState === 'closing',
+      maximizing: animationState === 'maximizing',
+      restoring: animationState === 'restoring'
     }"
     :style="windowStyle"
     @pointerdown="focusWindow"
@@ -23,7 +25,16 @@
         <div class="flex gap-2">
           <button class="traffic traffic-close" type="button" aria-label="Close window" title="Close" @pointerdown.stop @dblclick.stop @click.stop="closeWindow" />
           <button class="traffic traffic-minimize" type="button" aria-label="Minimize window" title="Minimize" @pointerdown.stop @dblclick.stop @click.stop="minimizeWindow" />
-          <button class="traffic traffic-maximize" type="button" aria-label="Maximize window" title="Maximize" @pointerdown.stop @dblclick.stop @click.stop="toggleMaximize" />
+          <button
+            class="traffic traffic-maximize"
+            :class="{ 'traffic-pulse': maximizePulse }"
+            type="button"
+            aria-label="Maximize window"
+            title="Maximize"
+            @pointerdown.stop
+            @dblclick.stop
+            @click.stop="handleMaximizeRequest"
+          />
         </div>
         <div class="flex min-w-0 items-center gap-2">
           <span class="app-icon">{{ icon }}</span>
@@ -90,6 +101,8 @@ const {
   viewportPadding: 14
 });
 const minimized = ref(false);
+const maximizePulse = ref(false);
+let maximizePulseTimer: ReturnType<typeof window.setTimeout> | undefined;
 
 const windowStyle = computed(() => ({
   ...style.value,
@@ -126,6 +139,27 @@ function closeWindow() {
   close();
 }
 
+function handleMaximizeRequest() {
+  triggerMaximizePulse();
+  toggleMaximize();
+}
+
+function triggerMaximizePulse() {
+  if (maximizePulseTimer) {
+    window.clearTimeout(maximizePulseTimer);
+  }
+
+  maximizePulse.value = false;
+  window.requestAnimationFrame(() => {
+    maximizePulse.value = true;
+  });
+
+  maximizePulseTimer = window.setTimeout(() => {
+    maximizePulse.value = false;
+    maximizePulseTimer = undefined;
+  }, 420);
+}
+
 function restoreWindow() {
   minimized.value = false;
   restore();
@@ -138,6 +172,12 @@ function focusWindow() {
 
 defineExpose({
   restore: restoreWindow
+});
+
+onBeforeUnmount(() => {
+  if (maximizePulseTimer) {
+    window.clearTimeout(maximizePulseTimer);
+  }
 });
 </script>
 
@@ -182,6 +222,19 @@ defineExpose({
 .poko-window.maximized {
   border-radius: 0 0 22px 22px;
   resize: none;
+}
+
+.poko-window.maximizing,
+.poko-window.restoring {
+  transition:
+    top 340ms cubic-bezier(0.16, 1, 0.3, 1),
+    left 340ms cubic-bezier(0.16, 1, 0.3, 1),
+    width 340ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 340ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 280ms ease,
+    box-shadow 280ms ease,
+    transform 280ms ease;
+  will-change: top, left, width, height;
 }
 
 .poko-window.dragging,
@@ -240,6 +293,7 @@ defineExpose({
 }
 
 .traffic {
+  position: relative;
   width: 0.78rem;
   height: 0.78rem;
   border-radius: 999px;
@@ -264,6 +318,20 @@ defineExpose({
 
 .traffic-maximize {
   background: #28c840;
+}
+
+.traffic-maximize::after {
+  position: absolute;
+  inset: -0.45rem;
+  border: 1px solid rgba(76, 255, 141, 0.58);
+  border-radius: inherit;
+  content: "";
+  opacity: 0;
+  transform: scale(0.7);
+}
+
+.traffic-maximize.traffic-pulse::after {
+  animation: maximizePulse 420ms ease forwards;
 }
 
 .app-icon {
@@ -302,6 +370,17 @@ defineExpose({
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes maximizePulse {
+  45% {
+    opacity: 0.8;
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.45);
   }
 }
 

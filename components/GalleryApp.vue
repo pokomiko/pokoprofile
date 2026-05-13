@@ -3,7 +3,7 @@
     ref="windowRef"
     :model-value="modelValue"
     title="Poko Gallery"
-    subtitle="classic slides + optimized VRChat media"
+    subtitle="VRChat Gallery"
     icon="GAL"
     :z-index="zIndex"
     :active="active"

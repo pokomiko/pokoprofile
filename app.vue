@@ -60,16 +60,16 @@ type RestorableWindow = {
 
 const booting = ref(true);
 const themeMode = ref<"dark" | "light">("dark");
-const activeApp = ref<AppId>("terminal");
+const activeApp = ref<AppId>("monitor");
 const openApps = reactive<Record<AppId, boolean>>({
   terminal: true,
   gallery: true,
-  monitor: false
+  monitor: true
 });
 const zIndex = reactive<Record<AppId, number>>({
   terminal: 1002,
   gallery: 1001,
-  monitor: 1000
+  monitor: 1003
 });
 const terminalRef = ref<RestorableWindow | null>(null);
 const galleryRef = ref<RestorableWindow | null>(null);
@@ -124,8 +124,8 @@ onMounted(() => {
 
   if (window.matchMedia("(max-width: 760px)").matches) {
     openApps.gallery = false;
-    openApps.monitor = false;
-    focusApp("terminal", true);
+    openApps.monitor = true;
+    focusApp("monitor", true);
   }
 
   bootTimer = window.setTimeout(() => {
