@@ -7,7 +7,7 @@
     icon="MON"
     :z-index="zIndex"
     :active="active"
-    :initial-bounds="{ top: 332, left: 648, width: 576, height: 422 }"
+    :initial-bounds="{ top: 648, left: 632, width: 592, height: 360 }"
     @update:model-value="$emit('update:modelValue', $event)"
     @focus="$emit('focus')"
   >

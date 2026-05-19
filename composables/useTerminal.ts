@@ -211,7 +211,7 @@ export function useTerminal() {
       run() {
         return [
           group([
-            "[live] PokoOS Portfolio    OS-style Nuxt profile shell",
+            "[live] Poko Website        OS-style Nuxt profile shell",
             "[live] Client Monitor      browser-side CPU/RAM dashboard",
             "[live] VRChat Gallery      optimized WebP media library",
             "[focus] DevOps Lab         CI/CD, containers, observability practice"
