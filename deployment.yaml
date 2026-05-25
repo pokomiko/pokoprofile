@@ -44,7 +44,7 @@ spec:
             - name: NEXT_TELEMETRY_DISABLED
               value: "1"
             - name: NEXT_PUBLIC_SITE_URL
-              value: https://poko-profile.example
+              value: https://poko.caferabbit.com
             - name: HOME
               value: /tmp
             - name: NPM_CONFIG_CACHE

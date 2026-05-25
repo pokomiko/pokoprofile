@@ -50,7 +50,7 @@ npm start
 The app includes non-root deployment artifacts:
 
 ```bash
-docker build --build-arg NEXT_PUBLIC_SITE_URL=https://your-domain.example -t poko-portfolio:latest .
+docker build --build-arg NEXT_PUBLIC_SITE_URL=https://poko.caferabbit.com -t poko-portfolio:latest .
 kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 ```

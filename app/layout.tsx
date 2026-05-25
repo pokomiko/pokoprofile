@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://poko-profile.example";
-const siteName = "PokoProfile";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://poko.caferabbit.com";
+const siteName = "Poko Website";
 const description =
   "PokoProfile is a pastel-blue PokoOS portfolio for system engineering, DevOps practice, monitoring, automation, and VRChat gallery work.";
 
