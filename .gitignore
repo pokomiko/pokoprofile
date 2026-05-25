@@ -25,6 +25,7 @@
 .DS_Store
 .codex/
 *.pem
+Backup/
 
 # local project guidance
 AGENTS.md
