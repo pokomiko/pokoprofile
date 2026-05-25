@@ -1,0 +1,14 @@
+.git
+.github
+.codex
+.next
+node_modules
+npm-debug.log*
+.npm
+.env
+.env.*
+Dockerfile
+deployment.yaml
+service.yaml
+README.md
+Backup

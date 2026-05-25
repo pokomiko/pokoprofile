@@ -1,4 +1,6 @@
-import { computed, nextTick, ref } from "vue";
+"use client";
+
+import { useRef, useState } from "react";
 
 export type TerminalTone = "accent" | "muted" | "success" | "warning" | "error";
 
@@ -31,8 +33,8 @@ const portfolioLinks = {
   vrchat: "https://vrchat.com/home/user/usr_21c3ad19-5da2-4f9b-b373-0d0d8af38c7a"
 };
 
-function text(text: string, tone?: TerminalTone): TerminalLine {
-  return { kind: "text", text, tone };
+function text(textValue: string, tone?: TerminalTone): TerminalLine {
+  return { kind: "text", text: textValue, tone };
 }
 
 function group(lines: string[], tone?: TerminalTone): TerminalLine {
@@ -70,20 +72,20 @@ function distance(a: string, b: string) {
 }
 
 export function useTerminal() {
-  const cmdInput = ref("");
-  const inputRef = ref<HTMLInputElement | null>(null);
-  const contentRef = ref<HTMLElement | null>(null);
-  const activeTheme = ref<(typeof themes)[number]>("aqua");
-  const terminalLines = ref<TerminalLine[]>([
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [cmdInput, setCmdInput] = useState("");
+  const [activeTheme, setActiveTheme] = useState<(typeof themes)[number]>("aqua");
+  const [terminalLines, setTerminalLines] = useState<TerminalLine[]>([
     text("PokoOS terminal attached to /dev/portfolio", "success"),
     text("Linux-style command surface ready. Type \"help\" to begin.", "accent")
   ]);
-  const logLines = ref<string[]>([
+  const [logLines, setLogLines] = useState<string[]>([
     "[sys] session attached",
     "[net] static portfolio mode"
   ]);
-  const history = ref<string[]>([]);
-  const historyCursor = ref(0);
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyCursor, setHistoryCursor] = useState(0);
 
   const commands: Record<string, CommandDefinition> = {
     help: {
@@ -111,7 +113,7 @@ export function useTerminal() {
 
         return [
           text("PokoOS shell 3.0.0 - System Engineer portfolio", "accent"),
-          group(commandNames.value.map((name) => `${name.padEnd(11)} ${commands[name].description}`)),
+          group(commandNames.map((name) => `${name.padEnd(11)} ${commands[name].description}`)),
           empty(),
           text("Try: neofetch, devops, infra, monitor, projects, theme light", "muted")
         ];
@@ -122,7 +124,7 @@ export function useTerminal() {
       description: "Clear the terminal screen",
       detail: "Clear visible output while keeping the session alive.",
       run() {
-        terminalLines.value = [text("Terminal cleared. Type \"help\" when ready.", "muted")];
+        setTerminalLines([text("Terminal cleared. Type \"help\" when ready.", "muted")]);
         log("[cmd] clear");
       }
     },
@@ -146,15 +148,13 @@ export function useTerminal() {
       aliases: ["bio", "card"],
       description: "Print a compact portfolio card",
       run() {
-        return [
-          group([
-            "Name: Poko",
-            "Role: System Engineer",
-            "Focus: Linux, DevOps, monitoring, automation",
-            "Status: online",
-            "Shell: PokoOS terminal"
-          ], "accent")
-        ];
+        return [group([
+          "Name: Poko",
+          "Role: System Engineer",
+          "Focus: Linux, DevOps, monitoring, automation",
+          "Status: online",
+          "Shell: PokoOS terminal"
+        ], "accent")];
       }
     },
     pwd: {
@@ -195,41 +195,35 @@ export function useTerminal() {
       aliases: ["stack", "tools"],
       description: "Show tools and strengths",
       run() {
-        return [
-          group([
-            "Core: Linux, shell scripting, networking basics, Windows operations",
-            "DevOps focus: Docker, CI/CD, Git workflows, infrastructure-as-code",
-            "Observability: CPU/RAM monitoring, uptime checks, log-first debugging",
-            "Frontend support: Nuxt, Vue, Tailwind, static deployment, asset optimization"
-          ])
-        ];
+        return [group([
+          "Core: Linux, shell scripting, networking basics, Windows operations",
+          "DevOps focus: Docker, CI/CD, Git workflows, infrastructure-as-code",
+          "Observability: CPU/RAM monitoring, uptime checks, log-first debugging",
+          "Frontend support: Next.js, React, Tailwind, static deployment, asset optimization"
+        ])];
       }
     },
     projects: {
       aliases: ["work", "portfolio"],
       description: "List featured projects",
       run() {
-        return [
-          group([
-            "[live] Poko Website        OS-style Nuxt profile shell",
-            "[live] Client Monitor      browser-side CPU/RAM dashboard",
-            "[live] VRChat Gallery      optimized WebP media library",
-            "[focus] DevOps Lab         CI/CD, containers, observability practice"
-          ])
-        ];
+        return [group([
+          "[live] Poko Website        OS-style Next.js profile shell",
+          "[live] Client Monitor      browser-side CPU/RAM dashboard",
+          "[live] VRChat Gallery      optimized WebP media library",
+          "[focus] DevOps Lab         CI/CD, containers, observability practice"
+        ])];
       }
     },
     experience: {
       aliases: ["exp", "timeline"],
       description: "Show work style timeline",
       run() {
-        return [
-          group([
-            "2026  Building PokoOS as a System Engineer portfolio interface.",
-            "2025  Optimized media assets and rebuilt the site around terminal workflows.",
-            "Now   Focusing DevOps: containers, pipelines, monitoring, repeatable deploys."
-          ])
-        ];
+        return [group([
+          "2026  Building PokoOS as a System Engineer portfolio interface.",
+          "2025  Optimized media assets and rebuilt the site around terminal workflows.",
+          "Now   Focusing DevOps: containers, pipelines, monitoring, repeatable deploys."
+        ])];
       }
     },
     socials: {
@@ -275,13 +269,11 @@ export function useTerminal() {
       aliases: ["photos", "slideshow"],
       description: "Describe the site gallery",
       run() {
-        return [
-          group([
-            "gallery/ contains optimized VRChat WebP captures.",
-            "Open the Gallery app from the top dock for full window controls.",
-            "Thumbnails are separated from full images for faster loading."
-          ])
-        ];
+        return [group([
+          "gallery/ contains optimized VRChat WebP captures.",
+          "Open the Gallery app from the top dock for full window controls.",
+          "Thumbnails are separated from full images for faster loading."
+        ])];
       }
     },
     theme: {
@@ -292,7 +284,7 @@ export function useTerminal() {
         const theme = args[0] as (typeof themes)[number] | undefined;
 
         if (!theme) {
-          return [text(`Active terminal theme: ${activeTheme.value}. Available: ${themes.join(", ")}`, "accent")];
+          return [text(`Active terminal theme: ${activeTheme}. Available: ${themes.join(", ")}`, "accent")];
         }
 
         if (!themes.includes(theme)) {
@@ -305,7 +297,7 @@ export function useTerminal() {
           return [text(`PokoOS switched to ${theme} mode.`, "success")];
         }
 
-        activeTheme.value = theme;
+        setActiveTheme(theme);
         log(`[ui] terminal accent ${theme}`);
         return [text(`Terminal accent switched to ${theme}.`, "success")];
       }
@@ -314,58 +306,50 @@ export function useTerminal() {
       aliases: ["status", "currently"],
       description: "Show current site status",
       run() {
-        return [
-          group([
-            "Status: online",
-            "Mode: PokoOS desktop",
-            "Current focus: DevOps foundations, monitoring, automation, and clean deployment flows"
-          ])
-        ];
+        return [group([
+          "Status: online",
+          "Mode: PokoOS desktop",
+          "Current focus: DevOps foundations, monitoring, automation, and clean deployment flows"
+        ])];
       }
     },
     neofetch: {
       aliases: ["fetch"],
       description: "Show PokoOS system card",
       run() {
-        return [
-          group([
-            "        ____        PokoOS",
-            "   ___ / __ \\___    host: portfolio.local",
-            "  / _ \\ /_/ / _ \\   role: System Engineer",
-            " / .__/\\____/\\___/  focus: DevOps + Observability",
-            "/_/                 shell: poko-terminal",
-            "                    desktop: liquid glass windows"
-          ], "accent")
-        ];
+        return [group([
+          "        ____        PokoOS",
+          "   ___ / __ \\___    host: portfolio.local",
+          "  / _ \\ /_/ / _ \\   role: System Engineer",
+          " / .__/\\____/\\___/  focus: DevOps + Observability",
+          "/_/                 shell: poko-terminal",
+          "                    desktop: liquid glass windows"
+        ], "accent")];
       }
     },
     devops: {
       aliases: ["focus", "roadmap"],
       description: "Show current DevOps focus",
       run() {
-        return [
-          group([
-            "Learning track:",
-            "- Docker images, Compose workflows, and container networking",
-            "- CI/CD pipelines with repeatable checks before deploy",
-            "- Infrastructure-as-code concepts and environment hygiene",
-            "- Monitoring, logs, alerts, and performance baselines"
-          ])
-        ];
+        return [group([
+          "Learning track:",
+          "- Docker images, Compose workflows, and container networking",
+          "- CI/CD pipelines with repeatable checks before deploy",
+          "- Infrastructure-as-code concepts and environment hygiene",
+          "- Monitoring, logs, alerts, and performance baselines"
+        ])];
       }
     },
     infra: {
       aliases: ["systems", "ops"],
       description: "Show systems engineering stack",
       run() {
-        return [
-          group([
-            "OS: Linux-first mindset, Windows support when needed",
-            "Network: DNS, HTTP, ports, firewalls, reverse proxy basics",
-            "Runtime: Node/Nuxt, static hosting, build artifacts",
-            "Practice: document, automate, observe, improve"
-          ])
-        ];
+        return [group([
+          "OS: Linux-first mindset, Windows support when needed",
+          "Network: DNS, HTTP, ports, firewalls, reverse proxy basics",
+          "Runtime: Node/Next.js, static hosting, build artifacts",
+          "Practice: document, automate, observe, improve"
+        ])];
       }
     },
     monitor: {
@@ -396,15 +380,13 @@ export function useTerminal() {
     ps: {
       description: "List running PokoOS apps",
       run() {
-        return [
-          group([
-            "PID   APP          STATE",
-            "101   terminal     interactive",
-            "202   gallery      windowed",
-            "303   monitor      sampling",
-            "404   topbar       resident"
-          ])
-        ];
+        return [group([
+          "PID   APP          STATE",
+          "101   terminal     interactive",
+          "202   gallery      windowed",
+          "303   monitor      sampling",
+          "404   topbar       resident"
+        ])];
       }
     },
     date: {
@@ -422,11 +404,11 @@ export function useTerminal() {
       aliases: ["hist"],
       description: "Show command history",
       run() {
-        if (history.value.length === 0) {
+        if (history.length === 0) {
           return [text("No commands in history yet.", "muted")];
         }
 
-        return [group(history.value.map((item, index) => `${String(index + 1).padStart(2, "0")}  ${item}`))];
+        return [group(history.map((item, index) => `${String(index + 1).padStart(2, "0")}  ${item}`))];
       }
     },
     echo: {
@@ -465,18 +447,15 @@ export function useTerminal() {
     }
   };
 
-  const aliasMap = computed(() => {
-    return Object.entries(commands).reduce<Record<string, string>>((acc, [name, definition]) => {
-      acc[name] = name;
-      definition.aliases?.forEach((alias) => {
-        acc[alias] = name;
-      });
-      return acc;
-    }, {});
-  });
-
-  const commandNames = computed(() => Object.keys(commands).sort());
-  const allCommandTokens = computed(() => Object.keys(aliasMap.value).sort());
+  const commandNames = Object.keys(commands).sort();
+  const aliasMap = Object.entries(commands).reduce<Record<string, string>>((acc, [name, definition]) => {
+    acc[name] = name;
+    definition.aliases?.forEach((alias) => {
+      acc[alias] = name;
+    });
+    return acc;
+  }, {});
+  const allCommandTokens = Object.keys(aliasMap).sort();
 
   function log(message: string) {
     const stamp = new Intl.DateTimeFormat("en-GB", {
@@ -485,15 +464,15 @@ export function useTerminal() {
       second: "2-digit"
     }).format(new Date());
 
-    logLines.value = [...logLines.value.slice(-8), `[${stamp}] ${message}`];
+    setLogLines((current) => [...current.slice(-8), `[${stamp}] ${message}`]);
   }
 
   function resolveCommand(value: string) {
-    return aliasMap.value[value.toLowerCase()];
+    return aliasMap[value.toLowerCase()];
   }
 
   function suggestCommand(value: string) {
-    const [suggestion] = allCommandTokens.value
+    const [suggestion] = allCommandTokens
       .map((name) => ({ name, score: distance(value, name) }))
       .filter((item) => item.score <= 3)
       .sort((a, b) => a.score - b.score);
@@ -501,97 +480,94 @@ export function useTerminal() {
     return suggestion?.name;
   }
 
-  function pushOutput(lines?: TerminalLine[] | void) {
-    if (!lines || lines.length === 0) {
+  function focusCommandInput() {
+    inputRef.current?.focus();
+  }
+
+  function scrollToBottom() {
+    if (!contentRef.current) {
       return;
     }
 
-    terminalLines.value.push(...lines);
+    contentRef.current.scrollTop = contentRef.current.scrollHeight;
   }
 
   function runCommand() {
-    const raw = normalizeCommand(cmdInput.value);
+    const raw = normalizeCommand(cmdInput);
 
     if (!raw) {
       return;
     }
 
-    terminalLines.value.push({ kind: "command", command: raw });
-    history.value.push(raw);
-    historyCursor.value = history.value.length;
+    setHistory((current) => {
+      const next = [...current, raw];
+      setHistoryCursor(next.length);
+      return next;
+    });
 
     const [token, ...args] = raw.split(" ");
     const commandName = resolveCommand(token);
 
     if (!commandName) {
       const suggestion = suggestCommand(token);
-      terminalLines.value.push(text(`poko-shell: ${token}: command not found`, "error"));
+      const output: TerminalLine[] = [text(`poko-shell: ${token}: command not found`, "error")];
 
       if (suggestion) {
-        terminalLines.value.push(text(`Did you mean "${suggestion}"?`, "warning"));
+        output.push(text(`Did you mean "${suggestion}"?`, "warning"));
       }
 
+      setTerminalLines((current) => [...current, { kind: "command", command: raw }, ...output]);
       log(`[err] ${token} not found`);
     } else {
       const output = commands[commandName].run({ args, raw, command: commandName });
-      pushOutput(output);
+
+      if (commandName !== "clear") {
+        setTerminalLines((current) => [...current, { kind: "command", command: raw }, ...(output ?? [])]);
+      }
     }
 
-    cmdInput.value = "";
-    nextTick(() => {
+    setCmdInput("");
+    window.requestAnimationFrame(() => {
       focusCommandInput();
       scrollToBottom();
     });
   }
 
-  function focusCommandInput() {
-    inputRef.value?.focus();
-  }
-
-  function scrollToBottom() {
-    if (!contentRef.value) {
-      return;
-    }
-
-    contentRef.value.scrollTop = contentRef.value.scrollHeight;
-  }
-
   function moveHistory(direction: -1 | 1) {
-    if (history.value.length === 0) {
+    if (history.length === 0) {
       return;
     }
 
-    historyCursor.value = Math.min(Math.max(historyCursor.value + direction, 0), history.value.length);
-    cmdInput.value = history.value[historyCursor.value] ?? "";
-
-    nextTick(() => {
-      const input = inputRef.value;
+    const nextCursor = Math.min(Math.max(historyCursor + direction, 0), history.length);
+    setHistoryCursor(nextCursor);
+    setCmdInput(history[nextCursor] ?? "");
+    window.requestAnimationFrame(() => {
+      const input = inputRef.current;
       input?.setSelectionRange(input.value.length, input.value.length);
     });
   }
 
   function autocomplete() {
-    const raw = cmdInput.value;
-    const [token, ...rest] = raw.split(" ");
+    const [token, ...rest] = cmdInput.split(" ");
 
     if (rest.length > 0) {
       return;
     }
 
-    const matches = allCommandTokens.value.filter((name) => name.startsWith(token.toLowerCase()));
+    const matches = allCommandTokens.filter((name) => name.startsWith(token.toLowerCase()));
 
     if (matches.length === 1) {
-      cmdInput.value = matches[0];
+      setCmdInput(matches[0]);
       return;
     }
 
     if (matches.length > 1) {
-      terminalLines.value.push(text(matches.join("  "), "muted"));
-      nextTick(scrollToBottom);
+      setTerminalLines((current) => [...current, text(matches.join("  "), "muted")]);
+      window.requestAnimationFrame(scrollToBottom);
     }
   }
 
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === "ArrowUp") {
       event.preventDefault();
       moveHistory(-1);
@@ -607,6 +583,7 @@ export function useTerminal() {
   return {
     prompt,
     cmdInput,
+    setCmdInput,
     inputRef,
     contentRef,
     terminalLines,

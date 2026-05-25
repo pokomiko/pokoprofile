@@ -8,7 +8,7 @@
   </p>
 
   <p>
-    <img alt="Nuxt 3" src="https://img.shields.io/badge/Nuxt_3-EAF8FF?style=for-the-badge&labelColor=B8E7FF&color=EAF8FF" />
+    <img alt="Next.js" src="https://img.shields.io/badge/Next.js-EAF8FF?style=for-the-badge&labelColor=B8E7FF&color=EAF8FF" />
     <img alt="PokoOS" src="https://img.shields.io/badge/PokoOS-Liquid_Glass-EAF8FF?style=for-the-badge&labelColor=AEDFFF&color=F5FCFF" />
     <img alt="Theme" src="https://img.shields.io/badge/Theme-Pastel_Blue-F5FCFF?style=for-the-badge&labelColor=C7EEFF&color=F5FCFF" />
   </p>
@@ -31,28 +31,41 @@ The visual direction is calm, airy, and light-blue friendly: polished enough for
 
 ## Development
 
-Install dependencies and start the Nuxt development server:
+Install dependencies and start the Next.js development server:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Build or generate the site:
+Build or run the production server:
 
 ```bash
 npm run build
-npm run generate
+npm start
 ```
+
+## Deployment
+
+The app includes non-root deployment artifacts:
+
+```bash
+docker build --build-arg NEXT_PUBLIC_SITE_URL=https://your-domain.example -t poko-portfolio:latest .
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
+
+Update `NEXT_PUBLIC_SITE_URL` in the Docker build arg and `deployment.yaml` before production so SEO canonical, robots, sitemap, Open Graph, and Twitter metadata use the real site URL.
 
 ## Project Map
 
-- `app.vue` composes the PokoOS desktop shell, boot animation state, app window state, and theme state.
-- `components/` contains the liquid-glass window system, top taskbar, terminal app, gallery app, monitoring app, and boot screen.
-- `composables/` contains terminal commands, gallery data, client metrics, and draggable window state.
+- `app/` contains the Next.js App Router entry, global CSS, robots, sitemap, and SEO metadata.
+- `components/` contains the React liquid-glass window system, top taskbar, terminal app, gallery app, monitoring app, and boot screen.
+- `hooks/` contains terminal commands, gallery data, client metrics, and draggable window state.
 - `public/images/` contains the live site assets.
 - `public/images/vrchat/` contains optimized VRChat WebP images and thumbnails.
-- `Backup/` is the archived pre-Nuxt static version.
+- `Dockerfile`, `deployment.yaml`, and `service.yaml` define the non-root container and Kubernetes deployment.
+- `Backup/` is the archived pre-framework static version.
 
 ## Palette Note
 
