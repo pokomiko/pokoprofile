@@ -31,7 +31,7 @@ The visual direction is calm, airy, and light-blue friendly: polished enough for
 
 ## Development
 
-This project requires Node.js 26.8.1. Use `nvm use` to select the version recorded in `.nvmrc`.
+This project requires Node.js 24.20.0. Use `nvm use` to select the version recorded in `.nvmrc`.
 
 Install dependencies and start the Next.js development server:
 

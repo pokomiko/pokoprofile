@@ -23,6 +23,6 @@
     "typescript": "latest"
   },
   "engines": {
-    "node": ">=26.8.1 <27"
+    "node": "24.x"
   }
 }

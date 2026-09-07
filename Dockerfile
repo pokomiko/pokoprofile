@@ -1,4 +1,4 @@
-FROM node:26.8.1-bookworm-slim AS deps
+FROM node:24.20.0-bookworm-slim AS deps
 
 WORKDIR /app
 ENV NODE_ENV=development
@@ -6,7 +6,7 @@ ENV NODE_ENV=development
 COPY package*.json ./
 RUN npm ci
 
-FROM node:26.8.1-bookworm-slim AS builder
+FROM node:24.20.0-bookworm-slim AS builder
 
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -17,7 +17,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-FROM node:26.8.1-bookworm-slim AS runner
+FROM node:24.20.0-bookworm-slim AS runner
 
 WORKDIR /app
 
