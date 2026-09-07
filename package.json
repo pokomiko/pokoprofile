@@ -23,6 +23,6 @@
     "typescript": "latest"
   },
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=26.8.1 <27"
   }
 }
